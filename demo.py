@@ -19,9 +19,9 @@ parser.add_argument(
     help='Visualize (i.e. save) output of flow.')
 args = parser.parse_args()
 
-fr = 5
-im_fn1 = os.path.expanduser('~/datasets/egopose/mocap1205/fpv_frames/take_01/%05d.png' % (fr + 1))
-im_fn2 = os.path.expanduser('~/datasets/egopose/mocap1205/fpv_frames/take_01/%05d.png' % fr)
+fr = 65
+im_fn1 = os.path.expanduser('~/datasets/egopose/fpv_frames/1205_take_01/%05d.png' % fr)
+im_fn2 = os.path.expanduser('~/datasets/egopose/fpv_frames/1205_take_01/%05d.png' % (fr + 1))
 im1 = np.array(Image.open(im_fn1))
 im2 = np.array(Image.open(im_fn2))
 # im1 = np.array(Image.open('examples/car1.jpg'))
@@ -46,7 +46,7 @@ e = time.time()
 print('Time Taken: %.2f seconds for image of size (%d, %d, %d)' % (
     e - s, im1.shape[0], im1.shape[1], im1.shape[2]))
 flow = np.concatenate((u[..., None], v[..., None]), axis=2)
-flow_gt = np.load(os.path.expanduser('~/datasets/egopose/mocap1205/fpv_of/take_01/%05d.npy' % fr))
+flow_gt = np.load(os.path.expanduser('~/datasets/egopose/fpv_of/1205_take_01/%05d.npy' % fr))
 diff_flow = flow - flow_gt
 print(np.min(diff_flow), np.max(diff_flow))
 np.save('examples/outFlow.npy', flow)
@@ -59,9 +59,10 @@ hsv[..., 0] = ang * 180 / np.pi / 2
 hsv[..., 2] = cv2.normalize(mag, None, 0, 255, cv2.NORM_MINMAX)
 rgb = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 cv2.imwrite('examples/outFlow_new.png', rgb)
-cv2.imwrite('examples/car2Warped_new.jpg', im2W[:, :, ::-1] * 255)
+cv2.imwrite('examples/im2W_new.jpg', im2W[:, :, ::-1] * 255)
+print(np.linalg.norm(im2W - im1))
 
-flow_vis_gt = cv2.imread(os.path.expanduser('~/datasets/egopose/mocap1205/fpv_of/take_01/%05d.png' % fr))
+flow_vis_gt = cv2.imread(os.path.expanduser('~/datasets/egopose/fpv_of/1205_take_01/%05d.png' % fr))
 cv2.imshow('pyflow', rgb)
 cv2.imshow('pwc_net', flow_vis_gt)
 cv2.moveWindow('pyflow', 0, 60)
